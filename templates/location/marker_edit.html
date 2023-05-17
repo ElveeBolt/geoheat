@@ -78,7 +78,7 @@
 {% endblock content %}
 {% block scripts %}
     <script>
-	mapboxgl.accessToken = 'pk.eyJ1Ijoic2FqZW1vcjU4MSIsImEiOiJjbGhoeDRlYWEwMmUyM3NsZXZ0azMzb3p0In0.d0mHDsFHCMgtd4iHKknGlg';
+	mapboxgl.accessToken = '{{ map_settings.token }}';
     const geojson = {
         'type': 'FeatureCollection',
         'features': [
@@ -103,7 +103,7 @@
 
 const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v12', // style URL
+    style: '{{ map_settings.style }}', // style URL
     center: [{{ location.lng }}, {{ location.lat }}],
     zoom: 13
 });

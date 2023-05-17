@@ -69,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processor.map_settings'
             ],
         },
     },
@@ -150,3 +151,7 @@ LOGOUT_REDIRECT_URL = '/'
 # Celery settings
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://0.0.0.0:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "redis://0.0.0.0:6379/0")
+
+# Map settings
+MAP_TOKEN = os.environ.get("MAP_TOKEN", "pk.eyJ1Ijoic2FqZW1vcjU4MSIsImEiOiJjbGhoeDRlYWEwMmUyM3NsZXZ0azMzb3p0In0.d0mHDsFHCMgtd4iHKknGlg")
+MAP_STYLE = os.environ.get("MAP_STYLE", "mapbox://styles/mapbox/light-v11")
