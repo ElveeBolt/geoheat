@@ -12,7 +12,7 @@ class LocationListView(LoginRequiredMixin, ListView):
     model = Location
     template_name = 'location/locations.html'
     context_object_name = 'locations'
-    paginate_by = 1
+    paginate_by = 10
     extra_context = {
         'title': 'Локации',
         'subtitle': 'Детальный список отслеживаемых локаций',

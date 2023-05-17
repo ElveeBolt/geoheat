@@ -10,19 +10,25 @@
 <div class="container">
     <div class="row">
         <div class="col-8">
-            <div class="row">
-                {% for location in locations %}
-                <div class="col-6">
-                    <div class="card mb-3">
-                        <h2>{{ location.title }}</h2>
-                        <div class="mb-3">{{ location.description }}</div>
-                        <div class="d-flex">
-                            <a href="{% url 'location' pk=location.id %}" class="btn btn-with-icon"><i class="fi fi-rr-document"></i>Детали</a>
+            {% for location in locations %}
+                <div class="card card-location mb-3">
+                    <div class="card-heading mb-3">
+                        <h2 class="mb-0">{{ location.title }}</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="mb-3">{{ location.description }}</div>
+                            <div class="d-flex text-muted align-items-center">
+                                <i class="fi fi-rr-marker me-1"></i><div class="span">{{ location.lat }}</div>, <div class="span">{{ location.lng }}</div>
+                                <i class="fi fi-rr-calendar ms-4 me-1"></i><div class="span">{{ location.date_publish }}</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <a href="{% url 'location' pk=location.id %}" class="btn btn-with-icon"><i class="fi fi-rr-document"></i>Смотреть детали</a>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
-            </div>
+            {% endfor %}
             {% include 'include/pagination.html' %}
         </div>
         <div class="col-4">
