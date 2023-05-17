@@ -1,1 +1,1 @@
-# geoheat
+# GeoHeat

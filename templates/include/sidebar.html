@@ -1,0 +1,24 @@
+{% load static %}
+<div id="sidebar">
+    <div class="sidebar-logo">
+        <img src="{% static 'img/logo.png' %}" alt="">
+        <div class="title">GeoHeat</div>
+    </div>
+    <ul class="list-sidebar mb-3">
+        <li class="title">Основное</li>
+        <li><a href="{% url 'index' %}"><i class="fi fi-rr-home"></i>Домой</a></li>
+        <li><a href="{% url 'about' %}"><i class="fi fi-rr-document"></i>О проекте</a></li>
+        <li><a href="{% url 'help' %}"><i class="fi fi-rr-question"></i>Ответы на вопросы</a></li>
+    </ul>
+    <ul class="list-sidebar mb-3">
+        <li class="title">Аналитика</li>
+        <li><a href="{% url 'map' %}"><i class="fi fi-rr-map"></i>Тепловая карта</a></li>
+        <li><a href="{% url 'analytics' %}"><i class="fi fi-rr-chart-area"></i>Аналитика</a></li>
+        <li><a href="{% url 'locations' %}"><i class="fi fi-rr-map-marker"></i>Локации</a></li>
+    </ul>
+    <ul class="list-sidebar mb-3">
+        <li class="title">Дополнительно</li>
+        <li><a href="{% url 'privacy' %}"><i class="fi fi-rr-document"></i>Политика конфиденциальности</a></li>
+        <li><a href="{% url 'terms' %}"><i class="fi fi-rr-document"></i>Условия использования</a></li>
+    </ul>
+</div>

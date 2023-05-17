@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading card-heading-with-button mb-3">
+                    <h2>Просмотр аккаунтов</h2>
+                    <div class="subtitle text-muted">Ниже приведена информация касательно добавленых аккаунтов</div>
+                    <a href="{% url 'account_create' %}" class="btn btn-with-icon"><i class="fi fi-rr-add"></i>Добавить аккаунт</a>
+                </div>
+                <table id="table-accounts" class="display">
+                    <thead>
+                        <tr>
+                            <th>Дата добавления</th>
+                            <th>Логин</th>
+                            <th>Пароль</th>
+                            <th>Социальная сеть</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for account in accounts %}
+                        <tr>
+                            <td data-sort="{{ account.date_publish|date:'dmYHi' }}">{{ account.date_publish }}</td>
+                            <td>{{ account.login }}</td>
+                            <td>{{ account.password }}</td>
+                            <td>{{ account.get_network_display }}</td>
+                            <td>
+                                <a href="{% url 'account' pk=account.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-document"></i></a>
+                                <a href="{% url 'account_edit' pk=account.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-edit"></i></a>
+                                <button type="button" class="btn btn-icon btn-with-icon btn-delete-modal" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'account_delete' pk=account.id %}" data-title="{{ account.login }}"><i class="fi fi-rr-trash"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% include 'user/menu.html' %}
+    </div>
+</div>
+{% include 'include/modal.html' %}
+{% endblock content %}
+{% block scripts %}
+<script>
+$(".btn-delete-modal").click(function () {
+    var url = $(this).attr('data-url');
+    var title = $(this).attr('data-title');
+
+    $('#delete-label').text(title);
+    $('.modal form').attr('action', url);
+});
+
+$('#table-accounts').DataTable({
+    order: [],
+    pageLength: 15,
+    bLengthChange: false,
+    searching: false,
+    language: {
+        "url": "/static/js/datatables_lang.json"
+    }
+});
+</script>
+{% endblock %}

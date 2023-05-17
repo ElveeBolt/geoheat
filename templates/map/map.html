@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Карта</h2>
+                    <div class="subtitle text-muted">Тепловая карта</div>
+                </div>
+                <div id="map" style="height: 600px"></div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Фильтр данных</h2>
+                    <div class="subtitle text-muted">Для визуализации данных выполните выборку</div>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.location.auto_id }}" class="form-label">{{ form.location.label }}</label>
+                        {% for pk, location in form.location.field.widget.choices %}
+                            <div class="form-check">
+                                <input id="{{ form.location.name }}_{{ pk }}" class="form-check-input" type="checkbox" name="{{ form.location.name }}" value="{{ pk }}" {% if pk in form.location.value %} checked="checked" {% endif %}>
+                                <label class="form-check-label" for="{{ form.location.name }}_{{ pk }}">{{ location }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.date_start.auto_id }}" class="form-label">{{ form.date_start.label }}</label>
+                        {{ form.date_start }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.date_end.auto_id }}" class="form-label">{{ form.date_end.label }}</label>
+                        {{ form.date_end }}
+                    </div>
+                    {{ form.errors }}
+                    <button type="submit" class="btn btn-primary btn-with-icon"><i class="fi fi-rr-filter"></i>Построить карту</button>
+                </form>
+            </div>
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>О тепловой карте</h2>
+                    <div class="subtitle text-muted">Дополнительная информация</div>
+                </div>
+                <div>
+                    Тепловая карта – это инструмент аналитики, который с помощью цветовой палитры рассказывает о поведении людей.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+    <script>
+    const geojson = {
+        'type': 'FeatureCollection',
+        'features': [
+            {% for marker in markers %}
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [{{ marker.marker.lng }}, {{ marker.marker.lat }}]
+                },
+                'properties': {
+                    'dbh': {{ marker.count }},
+                    'title': '{{ marker.marker.title }}',
+                    'lat': '{{ marker.marker.lat }}',
+                    'lng': '{{ marker.marker.lng }}',
+                }
+            },
+            {% endfor %}
+        ]
+    };
+
+	mapboxgl.accessToken = 'pk.eyJ1Ijoic2FqZW1vcjU4MSIsImEiOiJjbGhoeDRlYWEwMmUyM3NsZXZ0azMzb3p0In0.d0mHDsFHCMgtd4iHKknGlg';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [-79.999732, 40.4374],
+        zoom: 11
+    });
+    map.on('load', () => {
+        map.addSource('trees', {
+            'type': 'geojson',
+            'data':  geojson
+        });
+
+        map.addLayer({
+            'id': 'trees-heat',
+            'type': 'heatmap',
+            'source': 'trees',
+            'maxzoom': 15,
+            'paint': {
+                'heatmap-weight': {
+                    'property': 'dbh',
+                    'type': 'exponential',
+                    'stops': [
+                        [1, 0],
+                        [62, 1]
+                    ]
+                },
+                'heatmap-intensity': {
+                    'stops': [
+                        [11, 1],
+                        [15, 4]
+                    ]
+                },
+                'heatmap-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['heatmap-density'],
+                    0,
+                    'rgba(236,222,239,0)',
+                    0.2,
+                    'rgb(0,12,255)',
+                    0.4,
+                    'rgb(166,189,219)',
+                    0.6,
+                    'rgb(103,169,207)',
+                    0.8,
+                    'rgb(238,28,37)'
+                ],
+
+                'heatmap-radius': 60,
+                'heatmap-opacity': {
+                    'default': 1,
+                    'stops': [
+                        [14, 1],
+                        [15, 0]
+                    ]
+                }
+            }
+        },
+        'waterway-label'
+        );
+
+    map.addLayer({
+        'id': 'trees-point',
+        'type': 'circle',
+        'source': 'trees',
+        'minzoom': 14,
+        'paint': {
+        'circle-radius': {
+            'property': 'dbh',
+            'type': 'exponential',
+            'stops': [
+                [{ zoom: 15, value: 1 }, 5],
+                [{ zoom: 15, value: 62 }, 10],
+                [{ zoom: 22, value: 1 }, 20],
+                [{ zoom: 22, value: 62 }, 50]
+            ]
+        },
+        'circle-color': {
+            'property': 'dbh',
+            'type': 'exponential',
+            'stops': [
+                [0, 'rgba(236,222,239,0)'],
+                [10, 'rgb(236,222,239)'],
+                [20, 'rgb(208,209,230)'],
+                [30, 'rgb(166,189,219)'],
+                [40, 'rgb(103,169,207)'],
+                [50, 'rgb(28,144,153)'],
+                [60, 'rgb(1,108,89)']
+            ]
+        },
+        'circle-stroke-color': 'white',
+        'circle-stroke-width': 1,
+        'circle-opacity': {
+            'stops': [
+                [14, 0],
+                [15, 1]
+            ]
+        }
+        }
+    },
+    'waterway-label'
+    );
+    });
+
+map.on('click', 'trees-point', (event) => {
+    new mapboxgl.Popup()
+    .setLngLat(event.features[0].geometry.coordinates)
+    .setHTML(
+        '<h3>' + event.features[0].properties.title +'</h3>' +
+        '<p>Количество медиа: ' + event.features[0].properties.dbh + '</p>' +
+        'Широта: ' + event.features[0].properties.lat + '<br/>' +
+        'Долгота: ' + event.features[0].properties.lng + '<br/>'
+    )
+    .addTo(map);
+});
+</script>
+{% endblock scripts %}

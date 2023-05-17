@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <div class="card">
+                <img src="{% static 'img/logo.png' %}" alt="" class="card-logo">
+                <div class="card-heading text-center">
+                    <h2>{{ title }}</h2>
+                    <div class="subtitle text-muted">{{ subtitle }}</div>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.username.auto_id }}" class="form-label">{{ form.username.label }}</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.password.auto_id }}" class="form-label">{{ form.password.label }}</label>
+                        {{ form.password }}
+                    </div>
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <div class="text-danger text-center mb-3">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="d-grid mb-3">
+                        <button class="btn btn-primary btn-with-icon" type="submit"><i class="fi fi-rr-sign-in-alt"></i>Войти</button>
+                    </div>
+                    <div class="text-center text-muted small text-bold">
+                        У вас ещё нету аккаунта на GeoHeat?<br>
+                        <a href="{% url 'signup' %}">Зарегистрироваться</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

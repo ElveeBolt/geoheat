@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading">
+                    <h2>Редактировать маркер</h2>
+                    <div class="subtitle text-muted">Для того, чтобы добавить или изменить маркер, заполните форму ниже</div>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.title.auto_id }}" class="form-label">{{ form.title.label }}</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.description.auto_id }}" class="form-label">{{ form.description.label }}</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="{{ form.lat.auto_id }}" class="form-label">{{ form.lat.label }}</label>
+                                {{ form.lat }}
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="{{ form.lng.auto_id }}" class="form-label">{{ form.lng.label }}</label>
+                                {{ form.lng }}
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="{{ form.marker_id.auto_id }}" class="form-label">{{ form.marker_id.label }}</label>
+                                {{ form.marker_id }}
+                            </div>
+                        </div>
+                    </div>
+                    {{ form.errors }}
+                    <button type="submit" class="btn btn-primary btn-with-icon"><i class="fi fi-rr-disk"></i>Сохранить изменения</button>
+                </form>
+            </div>
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Карта локаций</h2>
+                    <div class="subtitle text-muted">Вспомогательная карта для определения нужной локации</div>
+                </div>
+                <div id="map" class="map-mini"></div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-heading mb-3">
+                    <h2>О маркере</h2>
+                    <div class="subtitle text-muted">Дополнительная информация</div>
+                </div>
+                <p class="mb-3">
+                    Маркер - конкретная точка на карте, которую люди могут отметить на своих публикациях.
+                    На основе маркеров выстраивается аналитика локации в целом.
+                </p>
+                <p class="mb-0">
+                    Для того, чтобы определить необходимый маркер воспользуйтесь картой,
+                    на которой изображенны доступные варианты выбора и заполните форму.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+    <script>
+	mapboxgl.accessToken = 'pk.eyJ1Ijoic2FqZW1vcjU4MSIsImEiOiJjbGhoeDRlYWEwMmUyM3NsZXZ0azMzb3p0In0.d0mHDsFHCMgtd4iHKknGlg';
+    const geojson = {
+        'type': 'FeatureCollection',
+        'features': [
+            {% for marker in markers %}
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [{{ marker.lng }}, {{ marker.lat }}]
+                },
+                'properties': {
+                    'title': '{{ marker.name }}',
+                    'description': '{{ marker.address }}',
+                    'lat': '{{ marker.lat }}',
+                    'lng': '{{ marker.lng }}',
+                    'id': '{{ marker.id }}',
+                }
+            },
+            {% endfor %}
+        ]
+    };
+
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12', // style URL
+    center: [{{ location.lng }}, {{ location.lat }}],
+    zoom: 13
+});
+
+for (const feature of geojson.features) {
+    const el = document.createElement('div');
+    el.className = 'marker';
+
+    new mapboxgl.Marker(el)
+    .setLngLat(feature.geometry.coordinates)
+    .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+        .setHTML(
+            '<h3>' + feature.properties.title +'</h3>' +
+            '<p>' + feature.properties.description + '</p>' +
+            'Ваша точка <br/><br/>' +
+            'Широта: ' + feature.properties.lat + '<br/>' +
+            'Долгота: ' + feature.properties.lng + '<br/>' +
+            'ID маркера: ' + feature.properties.id + '<br/>'
+        )
+    )
+    .addTo(map);
+}
+</script>
+{% endblock scripts %}

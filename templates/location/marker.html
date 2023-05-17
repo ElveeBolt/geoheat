@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading">
+                    <h2>{{ marker.title }}</h2>
+                    <div class="subtitle text-muted">Основная информация</div>
+                </div>
+                <div class="mb-3">{{ marker.description }}</div>
+                <div class="text-muted">{{ marker.date_publish }}</div>
+                <div class="location-widgets">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="widget">
+                                <i class="fi fi-rr-photo-video"></i>
+                                <div class="text-muted">Всего медия:</div>
+                                <div class="count">{{ marker.media_set.count }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3">
+        <div class="card-heading card-heading-with-button mb-3">
+            <h2>Просмотр медия</h2>
+            <div class="subtitle text-muted">Ниже приведена информация касательно медия</div>
+        </div>
+       <table id="table-medias" class="display">
+            <thead>
+                <tr>
+                    <th>Дата публикации</th>
+                    <th>ID</th>
+                    <th>Описание</th>
+                    <th>Код записи</th>
+                    <th>Автор</th>
+                    <th>Дата сканирования</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for media in medias %}
+                <tr>
+                    <td data-sort="{{ media.date_publish|date:'dmYHi' }}">{{ media.date_publish }}</td>
+                    <td>{{ media.media_pk }}</td>
+                    <td>{{ media.description|truncatechars:"20" }}</td>
+                    <td>{{ media.code }}</td>
+                    <td>{{ media.username }}</td>
+                    <td>{{ media.date_parse }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+$('#table-medias').DataTable({
+    order: [],
+    pageLength: 15,
+    bLengthChange: false,
+    searching: false,
+    language: {
+        "url": "/static/js/datatables_lang.json"
+    }
+});
+</script>
+{% endblock %}
+

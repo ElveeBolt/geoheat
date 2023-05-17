@@ -1,0 +1,6 @@
+Django==4.2.1
+psycopg2-binary==2.9.5
+instagrapi==1.17.9
+Pillow==9.5.0
+celery==5.2.7
+redis==4.5.1

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Общая тенденция</h2>
+                    <div class="subtitle text-muted">Ниже отображён наглядный график общего количества публикаций в указаном вами промежутке времени</div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <canvas id="chart-location-bar"></canvas>
+                    </div>
+                    <div class="col-4">
+                        <canvas id="chart-location-doughnut"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Фильтр данных</h2>
+                    <div class="subtitle text-muted">Для визуализации данных выполните выборку</div>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.location.auto_id }}" class="form-label">{{ form.location.label }}</label>
+                        {% for pk, location in form.location.field.widget.choices %}
+                            <div class="form-check">
+                                <input id="{{ form.location.name }}_{{ pk }}" class="form-check-input" type="checkbox" name="{{ form.location.name }}" value="{{ pk }}" {% if pk in form.location.value %} checked="checked" {% endif %}>
+                                <label class="form-check-label" for="{{ form.location.name }}_{{ pk }}">{{ location }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.date_start.auto_id }}" class="form-label">{{ form.date_start.label }}</label>
+                        {{ form.date_start }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.date_end.auto_id }}" class="form-label">{{ form.date_end.label }}</label>
+                        {{ form.date_end }}
+                    </div>
+                    {{ form.errors }}
+                    <button type="submit" class="btn btn-primary btn-with-icon"><i class="fi fi-rr-chart-area"></i>Построить аналитику</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+// jquery function
+$(document).ready(function(){
+    var chart_location_bar = document.getElementById("chart-location-bar");
+    var chart_location_doughnut = document.getElementById("chart-location-doughnut");
+    var myChart_1 = new Chart(chart_location_bar, {
+      type: 'bar',
+      data: {
+        labels: {{ locations.locations | safe }},
+        datasets: [{
+          label: 'Количество записей',
+          data: {{ locations.count | safe }},
+          borderWidth: 1
+        }]
+      },
+    });
+    var myChart_2 = new Chart(chart_location_doughnut, {
+      type: 'doughnut',
+      data: {
+        labels: {{ locations.locations | safe }},
+        datasets: [{
+          label: 'Количество записей',
+          data: {{ locations.count | safe }},
+          borderWidth: 1
+        }]
+      },
+    });
+});
+</script>
+{%endblock scripts%}

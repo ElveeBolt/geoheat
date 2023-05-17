@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading card-heading-with-button mb-3">
+                    <h2>{{ location.title }}</h2>
+                    <div class="subtitle text-muted">Основная информация</div>
+                    <a href="http://www.google.com/maps/place/{{ location.lat }},{{ location.lng }}" class="btn btn-with-icon" target="_blank"><i class="fi fi-rr-map"></i>Смотреть на карте</a>
+                </div>
+                <div class="mb-3">{{ location.description }}</div>
+                <div class="location-widgets">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="widget">
+                                <i class="fi fi-rr-map-marker"></i>
+                                <div class="text-muted">Широта и долгота:</div>
+                                <div class="count">{{ location.lat }}, {{ location.lng }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="widget">
+                                <i class="fi fi-rr-calendar"></i>
+                                <div class="text-muted">Дата добавления:</div>
+                                <div class="count">{{ location.date_publish }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="widget">
+                                <i class="fi fi-rr-marker"></i>
+                                <div class="text-muted">Всего маркеров:</div>
+                                <div class="count">{{ location.marker_set.all.count }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="card mb-3">
+                <div class="card-heading card-heading-with-button mb-3">
+                    <h2>Просмотр маркеров</h2>
+                    <div class="subtitle text-muted">Ниже приведена информация касательно установленых маркеров</div>
+                    <a href="{% url 'marker_create' pk=location.id %}" class="btn btn-with-icon"><i class="fi fi-rr-add"></i>Добавить маркер</a>
+                </div>
+               <table id="table-markers" class="display">
+                    <thead>
+                        <tr>
+                            <th>Дата добавления</th>
+                            <th>Название</th>
+                            <th>Широта</th>
+                            <th>Долгота</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for marker in location.marker_set.all %}
+                        <tr>
+                            <td data-sort="{{ marker.date_publish|date:'dmYHi' }}">{{ marker.date_publish }}</td>
+                            <td>{{ marker.title }}</td>
+                            <td>{{ marker.lat }}</td>
+                            <td>{{ marker.lng }}</td>
+                            <td>
+                                <a href="{% url 'marker' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-document"></i></a>
+                                <a href="{% url 'marker_edit' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-edit"></i></a>
+                                <button type="button" class="btn btn-icon btn-with-icon btn-delete-modal" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'marker_delete' pk=marker.id %}" data-title="{{ marker.title }}"><i class="fi fi-rr-trash"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Управление локацией</h2>
+                    <div class="subtitle text-muted">Информация об управлении</div>
+                </div>
+                <div class="mb-3">
+                    Для того, чтобы удалить или отредактировать локацию воспользуйтесь соответствующими кнопками.
+                </div>
+                <div class="d-flex">
+                     <a href="{% url 'location_edit' pk=location.id %}" class="btn btn-with-icon"><i class="fi fi-rr-edit"></i>Редактировать</a>
+                    <button type="button" class="btn btn-with-icon btn-delete-modal ms-2" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'location_delete' pk=location.id %}" data-title="{{ location.title }}"><i class="fi fi-rr-trash"></i>Удалить</button>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Запустить сбор информации</h2>
+                </div>
+                <div class="mb-3">
+                    Сбор информации осуществляется по мере нагруженности системы.
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.account.auto_id }}" class="form-label">{{ form.account.label }}</label>
+                        {{ form.account }}
+                    </div>
+                    <button class="btn btn-primary btn-with-icon"><i class="fi fi-rr-play"></i>Запустить сбор</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'include/modal.html' %}
+{% endblock content %}
+
+{% block scripts %}
+<script>
+$(".btn-delete-modal").click(function () {
+    var url = $(this).attr('data-url');
+    var title = $(this).attr('data-title');
+
+    $('#delete-label').text(title);
+    $('.modal form').attr('action', url);
+});
+
+$('#table-markers').DataTable({
+    order: [],
+    pageLength: 15,
+    bLengthChange: false,
+    searching: false,
+    language: {
+        "url": "/static/js/datatables_lang.json"
+    }
+});
+</script>
+{% endblock %}

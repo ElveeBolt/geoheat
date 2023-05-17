@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="about">
+    <div class="container align-items-center text-center">
+        <img src="{% static 'img/logo.png' %}" alt="">
+        <h1>GeoHeat</h1>
+        <div class="mb-3">
+            Инструмент, который помогает проанализировать <br>привлекательность определенной локации для целевой аудитории.
+        </div>
+        <div class="d-flex justify-content-center align-items-center"><a href="#analytics" class="btn btn-primary btn-with-icon"><i class="fi fi-rr-document"></i>Узнать детали</a></div>
+    </div>
+</section>
+<section id="analytics">
+    <div class="container">
+        <div class="section-header">
+            <h2>Виды аналитики</h2>
+            <div class="subtitle">В каком виде может быть предоставлена геоаналитика</div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+               <div class="card">
+                   <i class="fi fi-rr-map icon-big"></i>
+                   <div class="title">Тепловая карта</div>
+                   <div class="text">
+                       В результате анализа вы получаете интерактивные тепловые карты. На них цветом выделены популярные
+                       места среди отслеживаемых локаций. Где больше публикаций, там цвета на карте более теплые, и наоборот.
+                       Благодаря этому вы точно узнаете, где сосредоточена ваша целевая аудитория и где лучше разместить
+                       торговые точки, отделения, тренды или наружную рекламу.
+                   </div>
+               </div>
+            </div>
+            <div class="col-6">
+               <div class="card">
+                   <i class="fi fi-rr-chart-pie icon-big"></i>
+                   <div class="title">Метрики</div>
+                   <div class="text">
+                       Анализ данных полученных из социальных сетей может осуществлятся с помощью метрик,
+                       которые доступны к использованию на страницах аналитики. Для более точного анализа есть
+                       возможность применить фильтры.
+                   </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="usage">
+    <div class="container">
+        <div class="section-header">
+            <h2>Области применения</h2>
+            <div class="subtitle">Направления в которых возможно применить аналитику данных</div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card card-widget">
+                    <i class="fi fi-rr-search"></i>
+                    <div class="title">Поиск ЦА</div>
+                    <div class="text-muted">Поиск популярных мест на определенной территории страны, города или района</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card card-widget">
+                    <i class="fi fi-rr-flag"></i>
+                    <div class="title">Прогнозирование событий</div>
+                    <div class="text-muted">Анализ публикаций в предверье тех или иных событий, которые должны состояться</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card card-widget">
+                    <i class="fi fi-rr-chess-king"></i>
+                    <div class="title">Исторический анализ</div>
+                    <div class="text-muted">Анализ движения людей на основе данных полученных из "прошлого"</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="networks">
+    <div class="container">
+        <div class="section-header">
+            <h2>Поддерживаемые сервисы</h2>
+            <div class="subtitle">Сервисы данные которых анализируются в GeoHeat</div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card card-widget">
+                    <img src="{% static 'img/instagram_icon.png' %}" alt="">
+                    <div class="title">Instagram</div>
+                    <div class="text">Instagram — американская социальная сеть для обмена фотографиями и видео.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

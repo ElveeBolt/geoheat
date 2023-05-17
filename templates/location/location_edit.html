@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Редактировать локацию</h2>
+                    <div class="subtitle text-muted">Для того, чтобы добавить или изменить локацию, заполните форму ниже</div>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.title.auto_id }}" class="form-label">{{ form.title.label }}</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.description.auto_id }}" class="form-label">{{ form.description.label }}</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="{{ form.lat.auto_id }}" class="form-label">{{ form.lat.label }}</label>
+                                {{ form.lat }}
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="{{ form.lng.auto_id }}" class="form-label">{{ form.lng.label }}</label>
+                                {{ form.lng }}
+                            </div>
+                        </div>
+                    </div>
+                    {{ form.errors }}
+                    <button type="submit" class="btn btn-primary btn-with-icon"><i class="fi fi-rr-disk"></i>Сохранить изменения</button>
+                </form>
+            </div>
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Карта локаций</h2>
+                    <div class="subtitle text-muted">Вспомогательная карта для определения нужной локации</div>
+                </div>
+                <div id="map" class="map-mini"></div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-heading mb-3">
+                    <h2>О локации</h2>
+                    <div class="subtitle text-muted">Дополнительная информация</div>
+                </div>
+                <p class="mb-3">
+                    Локация - определённая точка на карте вокруг которой, выстраивается группа маркерков.
+                    Локация может содержать в себе несколько макеров, полученных вблизи указанной локации.
+                </p>
+                <p class="mb-0">
+                    Для того, чтобы определить необходимую локацию воспользуйтесь дополнительной картой и заполните форму.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FqZW1vcjU4MSIsImEiOiJjbGhoeDRlYWEwMmUyM3NsZXZ0azMzb3p0In0.d0mHDsFHCMgtd4iHKknGlg';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-122.486052, 37.830348],
+      zoom: 14
+    });
+
+    map.on('style.load', function() {
+      map.on('click', function(e) {
+        var coordinates = e.lngLat;
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML('Ваша точка <br/><br/>Широта: ' + coordinates.lat + '<br/>Долгота: ' + coordinates.lng)
+          .addTo(map);
+      });
+    });
+</script>
+{% endblock scripts %}
+

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                {% for location in locations %}
+                <div class="col-6">
+                    <div class="card mb-3">
+                        <h2>{{ location.title }}</h2>
+                        <div class="mb-3">{{ location.description }}</div>
+                        <div class="d-flex">
+                            <a href="{% url 'location' pk=location.id %}" class="btn btn-with-icon"><i class="fi fi-rr-document"></i>Детали</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-heading mb-3">
+                    <h2>Добавление локации</h2>
+                    <div class="subtitle text-muted">Информация касательно добавления</div>
+                </div>
+                <div class="mb-3">Локация - определённая точка на карте, вокруг который добавляются маркеры.
+                    Для того, чтобы добавить новую локацию перейдите по ссылке ниже.</div>
+                <div class="d-flex">
+                    <a href="{% url 'location_create' %}" class="btn btn-with-icon btn-primary"><i class="fi fi-rr-add"></i>Добавить локацию</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="index">
+    <div class="index-box">
+        <img src="{% static 'img/logo.png' %}" alt="">
+        <h1>{{ title }}</h1>
+        <div class="subtitle">{{ subtitle }}</div>
+    </div>
+</div>
+{% endblock content %}

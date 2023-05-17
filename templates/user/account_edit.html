@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading">
+                    <h2>Редактировать аккаунт</h2>
+                    <div class="subtitle text-muted">Для того, чтобы добавить или изменить аккаунт, заполните форму ниже</div>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.login.auto_id }}" class="form-label">{{ form.login.label }}</label>
+                        {{ form.login }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.password.auto_id }}" class="form-label">{{ form.password.label }}</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.network.auto_id }}" class="form-label">{{ form.network.label }}</label>
+                        {{ form.network }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.comment.auto_id }}" class="form-label">{{ form.comment.label }}</label>
+                        {{ form.comment }}
+                    </div>
+                    {{ form.errors }}
+                    <button type="submit" class="btn btn-primary btn-with-icon"><i class="fi fi-rr-disk"></i>Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-heading mb-3">
+                    <h2>Об аккаунтах</h2>
+                    <div class="subtitle text-muted">Дополнительная информация</div>
+                </div>
+                <p class="mb-3">
+                    Сбор данных осуществляется при помощи созданных вами аккаунтов. На данный момент поддерживается только Instagram.
+                </p>
+                <p class="mb-0">
+                    Для того, чтобы добавить новый аккаунт или изменить существующий заполните форму.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

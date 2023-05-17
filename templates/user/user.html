@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading">
+                    <h2>Детали профиля</h2>
+                    <div class="subtitle text-muted">Основная информация</div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <div class="user-avatar">{{ user.username|slice:":2" }}</div>
+                    </div>
+                    <div class="col-10">
+                        <h3>{{ user.username }}</h3>
+                        <div class="mb-3">{{ user.email }}</div>
+                        <div class="text-muted">{{ user.date_joined }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="card card-widget">
+                        <i class="fi fi-rr-map"></i>
+                        <div class="text-muted">Локаций:</div>
+                        <div class="count">{{ user.location_set.all.count }}</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card card-widget">
+                        <i class="fi fi-rr-users-alt"></i>
+                        <div class="text-muted">Аккаунтов:</div>
+                        <div class="count">{{ user.account_set.all.count }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'user/menu.html' %}
+    </div>
+</div>
+{% endblock content %}
+
+

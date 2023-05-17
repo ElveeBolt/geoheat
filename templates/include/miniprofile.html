@@ -1,0 +1,29 @@
+<div class="modal fade" id="miniprofile" tabindex="-1" aria-labelledby="miniprofileLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="miniprofileLabel">Мой профиль</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                {% if user.is_authenticated %}
+                <div class="mini-profile-avatar">{{ user.username|slice:":2" }}</div>
+                    <div class="title">{{ user.username }}</div>
+                    <div class="text-muted mb-3">{{ user.email }}</div>
+                <div class="d-grid">
+                    <a class="btn btn-with-icon mb-3" href="{% url 'user' %}">Мой профиль</a>
+                    <a class="btn btn-with-icon" href="{% url 'logout' %}">Выйти</a>
+                </div>
+                {% else %}
+                <div class="mini-profile-avatar"><i class="fi fi-rr-user"></i></div>
+                <div class="title">Выполните вход</div>
+                <div class="text-muted mb-3">Войдите в систему или создайте аккаунт для того, чтобы воспользоватся возможностями сервиса</div>
+                <div class="d-grid">
+                    <a class="btn btn-primary btn-with-icon mb-3" href="{% url 'login' %}">Войти</a>
+                    <a class="btn btn-with-icon" href="{% url 'signup' %}">Регистрация</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
