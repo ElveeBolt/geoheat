@@ -2,15 +2,14 @@ from instagrapi import Client
 
 
 class InstagramClient:
-    def __init__(self, login, password):
+    def __init__(self, login, password, code):
         self._login = login
         self.password = password
+        self.code = code
 
     def create_client(self):
         client = Client()
-        # client.load_settings('./dump.json')
-        client.login(self._login, self.password)
-        client.dump_settings('./dump.json')
+        client.login(self._login, self.password, self.code)
         return client
 
     def search_locations(self, lat: float, lng: float):

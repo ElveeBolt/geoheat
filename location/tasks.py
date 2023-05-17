@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 from celery import shared_task
 from api.instagram import InstagramClient
@@ -6,14 +5,17 @@ from .models import Marker, Media
 
 
 @shared_task(queue='parser')
-def create_task(location_id: int, login: str, password: str):
+def create_task(location_id: int, login: str, password: str, code: str):
     markers = Marker.objects.filter(location_id=location_id)
-
-    client = InstagramClient(login=login, password=password)
+    client = InstagramClient(login=login, password=password, code=code)
 
     for marker in markers:
         medias = client.parse_images_by_marker(marker_id=marker.marker_id)
         for media in medias:
+
+            if Media.objects.filter(media_pk=media.pk).exists():
+                continue
+
             media = Media(
                 media_pk=media.pk,
                 marker=marker,
@@ -26,6 +28,5 @@ def create_task(location_id: int, login: str, password: str):
             media.save()
 
     return {
-        'location_id': location_id,
-        'datetime': datetime.now()
+        'location_id': location_id
     }

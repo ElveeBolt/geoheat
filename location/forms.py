@@ -120,6 +120,16 @@ class StartParseForm(forms.Form):
             }
         )
     )
+    code = forms.CharField(
+        label='2FA код:',
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите код 2FA...'
+            }
+        )
+    )
 
     class Meta:
         model = Marker
