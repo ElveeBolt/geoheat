@@ -18,6 +18,9 @@ class LocationListView(LoginRequiredMixin, ListView):
         'subtitle': 'Детальный список отслеживаемых локаций',
     }
 
+    def get_queryset(self):
+        return Location.objects.filter(user=self.request.user).order_by('date_publish')
+
 
 class LocationDetailView(LoginRequiredMixin, FormView, DetailView):
     model = Location
@@ -42,8 +45,9 @@ class LocationDetailView(LoginRequiredMixin, FormView, DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         account_id = request.POST.get('account')
+        code = request.POST.get('code')
         account = Account.objects.get(id=account_id)
-        create_task.delay(location_id=self.object.id, login=account.login, password=account.password)
+        create_task.delay(location_id=self.object.id, login=account.login, password=account.password, code=code)
         return super().post(request, *args, **kwargs)
 
 
