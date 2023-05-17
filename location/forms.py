@@ -1,6 +1,5 @@
 from django import forms
 from .models import Location, Marker
-from user.models import Account
 
 
 class LocationForm(forms.ModelForm):
@@ -111,6 +110,7 @@ class MarkerForm(forms.ModelForm):
 
 class StartParseForm(forms.Form):
     account = forms.ModelChoiceField(
+        label='Аккаунт:',
         queryset=None,
         required=True,
         widget=forms.Select(
