@@ -47,7 +47,7 @@
                 <div class="card-heading card-heading-with-button mb-3">
                     <h2>Просмотр маркеров</h2>
                     <div class="subtitle text-muted">Ниже приведена информация касательно установленых маркеров</div>
-                    <a href="{% url 'marker_create' pk=location.id %}" class="btn btn-with-icon"><i class="fi fi-rr-add"></i>Добавить маркер</a>
+                    <button type="button" class="btn btn-with-icon btn-auth-modal" data-bs-toggle="modal" data-bs-target="#auth-modal" data-url="{% url 'marker_create' pk=location.id %}" data-title="Добавление маркера"><i class="fi fi-rr-add"></i>Добавить маркер</button>
                 </div>
                <table id="table-markers" class="display">
                     <thead>
@@ -68,7 +68,7 @@
                             <td>{{ marker.lng }}</td>
                             <td>
                                 <a href="{% url 'marker' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-document"></i></a>
-                                <a href="{% url 'marker_edit' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-edit"></i></a>
+                                <button type="button" class="btn btn-icon btn-with-icon btn-auth-modal" data-bs-toggle="modal" data-bs-target="#auth-modal" data-url="{% url 'marker_edit' pk=marker.id %}" data-title="Редактирование маркера"><i class="fi fi-rr-edit"></i></button>
                                 <button type="button" class="btn btn-icon btn-with-icon btn-delete-modal" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'marker_delete' pk=marker.id %}" data-title="{{ marker.title }}"><i class="fi fi-rr-trash"></i></button>
                             </td>
                         </tr>
@@ -98,23 +98,39 @@
                 <div class="mb-3">
                     Сбор информации осуществляется по мере нагруженности системы.
                 </div>
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="{{ form.account.auto_id }}" class="form-label">{{ form.account.label }}</label>
-                        {{ form.account }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="{{ form.code.auto_id }}" class="form-label">{{ form.code.label }}</label>
-                        {{ form.code }}
-                    </div>
-                    <button class="btn btn-primary btn-with-icon"><i class="fi fi-rr-play"></i>Запустить сбор</button>
-                </form>
+                <div class="d-grid">
+                    <button type="button" class="btn btn-primary btn-with-icon btn-auth-modal" data-bs-toggle="modal" data-bs-target="#auth-modal" data-url="" data-title="Запуск сбора данных"><i class="fi fi-rr-play"></i>Запустить сбор</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 {% include 'include/modal.html' %}
+<div class="modal fade" id="auth-modal" tabindex="-1" aria-labelledby="auth-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modal-label"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.account.auto_id }}" class="form-label">{{ form.account.label }}</label>
+                {{ form.account }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.code.auto_id }}" class="form-label">{{ form.code.label }}</label>
+                {{ form.code }}
+            </div>
+            <input type="hidden" name="auth" value="auth">
+            <button class="btn btn-primary btn-with-icon" value="auth"><i class="fi fi-rr-play"></i>Авторизироваться</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 
 {% block scripts %}
@@ -124,7 +140,15 @@ $(".btn-delete-modal").click(function () {
     var title = $(this).attr('data-title');
 
     $('#delete-label').text(title);
-    $('.modal form').attr('action', url);
+    $('#delete-modal form').attr('action', url);
+});
+
+$(".btn-auth-modal").click(function () {
+    var url = $(this).attr('data-url');
+    var title = $(this).attr('data-title');
+
+    $('#modal-label').text(title);
+    $('#auth-modal form').attr('action', url);
 });
 
 $('#table-markers').DataTable({

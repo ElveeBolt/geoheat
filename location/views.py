@@ -107,6 +107,20 @@ class MarkerUpdateView(LoginRequiredMixin, UpdateView):
         'subtitle': 'Страница редактирования данных текущего маркера',
     }
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        location = Location.objects.get(id=self.kwargs['pk'])
+        context['location'] = location
+
+        account_id = self.request.POST.get('account')
+        code = self.request.POST.get('code')
+        account = Account.objects.get(id=account_id)
+
+        client = InstagramClient(login=account.login, password=account.password, code=code)
+        context['markers'] = client.search_locations(lat=location.lat, lng=location.lng)
+        return context
+
 
 class MarkerCreateView(LoginRequiredMixin, CreateView):
     model = Location
@@ -119,9 +133,15 @@ class MarkerCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         location = Location.objects.get(id=self.kwargs['pk'])
         context['location'] = location
-        client = InstagramClient(login='test', password='test')
+
+        account_id = self.request.POST.get('account')
+        code = self.request.POST.get('code')
+        account = Account.objects.get(id=account_id)
+
+        client = InstagramClient(login=account.login, password=account.password, code=code)
         context['markers'] = client.search_locations(lat=location.lat, lng=location.lng)
         return context
 
