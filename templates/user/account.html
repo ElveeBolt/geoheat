@@ -11,16 +11,43 @@
     <div class="row">
         <div class="col-8">
             <div class="card mb-3">
-                <div class="card-heading">
-                    <h2>{{ marker.title }}</h2>
-                    <div class="subtitle text-muted">Основная информация</div>
+                <div class="card-heading card-heading-with-button mb-3">
+                    <h2>{{ account.login }}</h2>
+                    <div class="subtitle text-muted">Основная информация об аккаунте</div>
                 </div>
-                <div class="mb-3">{{ marker.description }}</div>
-                <div class="text-muted">{{ marker.date_publish }}</div>
+                <div class="mb-3">{{ account.comment }}</div>
+                <div class="mb-3">Тип аккаунта: {{ account.get_network_display }}</div>
+                <div class="text-muted">Дата добавления: {{ account.date_publish }}</div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Управление аккаунтом</h2>
+                    <div class="subtitle text-muted">Информация об управлении</div>
+                </div>
+                <div class="mb-3">
+                    Для того, чтобы удалить или отредактировать аккаунт воспользуйтесь соответствующими кнопками.
+                </div>
+                <div class="d-flex">
+                     <a href="{% url 'account_edit' pk=account.id %}" class="btn btn-with-icon"><i class="fi fi-rr-edit"></i>Редактировать</a>
+                    <button type="button" class="btn btn-with-icon btn-delete-modal ms-2" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'account_delete' pk=account.id %}" data-title="{{ account.login }}"><i class="fi fi-rr-trash"></i>Удалить</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% include 'include/modal.html' %}
 {% endblock content %}
 
+{% block scripts %}
+<script>
+$(".btn-delete-modal").click(function () {
+    var url = $(this).attr('data-url');
+    var title = $(this).attr('data-title');
 
+    $('#delete-label').text(title);
+    $('.modal form').attr('action', url);
+});
+</script>
+{% endblock %}
