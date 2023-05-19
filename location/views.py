@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, FormView
 from location.models import Location, Marker, Media, Point
@@ -150,9 +151,10 @@ class MarkerCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('location', kwargs={'pk': self.kwargs['pk']})
 
 
-class MarkerDeleteView(LoginRequiredMixin, DeleteView):
+class MarkerDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Marker
     success_url = reverse_lazy('locations')
+    success_message = 'Маркер был успешно удалён из локации'
 
 
 
