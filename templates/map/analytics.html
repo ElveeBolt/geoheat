@@ -68,10 +68,10 @@ $(document).ready(function(){
     var myChart_1 = new Chart(chart_location_bar, {
       type: 'bar',
       data: {
-        labels: {{ locations.locations | safe }},
+        labels: {{ statistics.locations.labels | safe }},
         datasets: [{
           label: 'Количество записей',
-          data: {{ locations.count | safe }},
+          data: {{ statistics.locations.data | safe }},
           borderWidth: 1
         }]
       },
@@ -79,10 +79,10 @@ $(document).ready(function(){
     var myChart_2 = new Chart(chart_location_doughnut, {
       type: 'doughnut',
       data: {
-        labels: {{ locations.locations | safe }},
+        labels: {{ statistics.locations.labels | safe }},
         datasets: [{
           label: 'Количество записей',
-          data: {{ locations.count | safe }},
+          data: {{ statistics.locations.data | safe }},
           borderWidth: 1
         }]
       },

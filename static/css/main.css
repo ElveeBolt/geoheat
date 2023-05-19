@@ -649,6 +649,16 @@ section#networks .card-widget img {
     margin: 0 auto 10px;
 }
 
+section#analytics .card{
+    text-align: center;
+}
+
+section#analytics .card .title {
+    font-weight: 500;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
 .icon-big{
     width: 100px;
     height: 100px;
@@ -656,7 +666,7 @@ section#networks .card-widget img {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
+    margin: 0 auto 15px;
     font-size: 35px;
     border-radius: 50%;
 }

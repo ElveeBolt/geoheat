@@ -30,6 +30,21 @@
                 </div>
             </div>
         </div>
+        <div class="col-4">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Управление маркером</h2>
+                    <div class="subtitle text-muted">Информация об управлении</div>
+                </div>
+                <div class="mb-3">
+                    Для того, чтобы удалить или отредактировать маркер воспользуйтесь соответствующими кнопками.
+                </div>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-with-icon btn-auth-modal" data-bs-toggle="modal" data-bs-target="#auth-modal" data-url="{% url 'marker_edit' pk=marker.id %}" data-title="Редактирование маркера"><i class="fi fi-rr-edit"></i>Редактировать</button>
+                    <button type="button" class="btn btn-with-icon btn-delete-modal ms-2" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'marker_delete' pk=marker.id %}" data-title="{{ marker.title }}"><i class="fi fi-rr-trash"></i>Удалить</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="card mb-3">
         <div class="card-heading card-heading-with-button mb-3">
@@ -62,9 +77,26 @@
         </table>
     </div>
 </div>
+{% include 'include/modal.html' %}
+{% include 'include/modal_auth.html' %}
 {% endblock content %}
 {% block scripts %}
 <script>
+$(".btn-delete-modal").click(function () {
+    var url = $(this).attr('data-url');
+    var title = $(this).attr('data-title');
+
+    $('#delete-label').text(title);
+    $('#delete-modal form').attr('action', url);
+});
+
+$(".btn-auth-modal").click(function () {
+    var url = $(this).attr('data-url');
+    var title = $(this).attr('data-title');
+
+    $('#modal-label').text(title);
+    $('#auth-modal form').attr('action', url);
+});
 $('#table-medias').DataTable({
     order: [],
     pageLength: 15,

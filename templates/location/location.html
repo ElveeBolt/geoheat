@@ -47,7 +47,7 @@
                 <div class="card-heading card-heading-with-button mb-3">
                     <h2>Просмотр маркеров</h2>
                     <div class="subtitle text-muted">Ниже приведена информация касательно установленых маркеров</div>
-                    <button type="button" class="btn btn-with-icon btn-auth-modal" data-bs-toggle="modal" data-bs-target="#auth-modal" data-url="{% url 'marker_create' pk=location.id %}" data-title="Добавление маркера"><i class="fi fi-rr-add"></i>Добавить маркер</button>
+                    <a class="btn btn-with-icon" href="{% url 'marker_create' pk=location.id %}"><i class="fi fi-rr-add"></i>Добавить маркер</a>
                 </div>
                <table id="table-markers" class="display">
                     <thead>
@@ -68,7 +68,7 @@
                             <td>{{ marker.lng }}</td>
                             <td>
                                 <a href="{% url 'marker' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-document"></i></a>
-                                <button type="button" class="btn btn-icon btn-with-icon btn-auth-modal" data-bs-toggle="modal" data-bs-target="#auth-modal" data-url="{% url 'marker_edit' pk=marker.id %}" data-title="Редактирование маркера"><i class="fi fi-rr-edit"></i></button>
+                                <a href="{% url 'marker_edit' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-edit"></i></a>
                                 <button type="button" class="btn btn-icon btn-with-icon btn-delete-modal" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'marker_delete' pk=marker.id %}" data-title="{{ marker.title }}"><i class="fi fi-rr-trash"></i></button>
                             </td>
                         </tr>
@@ -89,6 +89,18 @@
                 <div class="d-flex">
                      <a href="{% url 'location_edit' pk=location.id %}" class="btn btn-with-icon"><i class="fi fi-rr-edit"></i>Редактировать</a>
                     <button type="button" class="btn btn-with-icon btn-delete-modal ms-2" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'location_delete' pk=location.id %}" data-title="{{ location.title }}"><i class="fi fi-rr-trash"></i>Удалить</button>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>Сбор точек</h2>
+                </div>
+                <div class="mb-3">
+                    Сбор информации осуществляется по мере нагруженности системы.
+                </div>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-primary btn-with-icon btn-auth-modal" data-bs-toggle="modal" data-bs-target="#auth-modal" data-url="{% url 'location_points' pk=location.id %}" data-title="Запуск сбора точек"><i class="fi fi-rr-play"></i>Запустить сбор</button>
+                    <a href="{% url 'location_points' pk=location.id %}" class="btn btn-with-icon ms-2"><i class="fi fi-rr-edit"></i>Смотреть точки</a>
                 </div>
             </div>
             <div class="card mb-3">
@@ -124,7 +136,6 @@
                 <label for="{{ form.code.auto_id }}" class="form-label">{{ form.code.label }}</label>
                 {{ form.code }}
             </div>
-            <input type="hidden" name="auth" value="auth">
             <button class="btn btn-primary btn-with-icon" value="auth"><i class="fi fi-rr-play"></i>Авторизироваться</button>
         </form>
       </div>

@@ -154,4 +154,4 @@ CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "redis://0.0.0.0
 
 # Map settings
 MAP_TOKEN = os.environ.get("MAP_TOKEN", "pk.eyJ1Ijoic2FqZW1vcjU4MSIsImEiOiJjbGhoeDRlYWEwMmUyM3NsZXZ0azMzb3p0In0.d0mHDsFHCMgtd4iHKknGlg")
-MAP_STYLE = os.environ.get("MAP_STYLE", "mapbox://styles/mapbox/light-v11")
+MAP_STYLE = os.environ.get("MAP_STYLE", "mapbox://styles/mapbox/dark-v11")

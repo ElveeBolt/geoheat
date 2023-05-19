@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, FormView
-from location.models import Location, Marker, Media
+from location.models import Location, Marker, Media, Point
 from location.forms import MarkerForm, LocationForm, StartParseForm
 from api.instagram import InstagramClient
 from user.models import Account
 from .tasks import create_task
+from django.shortcuts import render
+
 
 
 class LocationListView(LoginRequiredMixin, ListView):
@@ -82,14 +84,20 @@ class LocationDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('locations')
 
 
-class MarkerDetailView(LoginRequiredMixin, DetailView):
+class MarkerDetailView(LoginRequiredMixin, FormView, DetailView):
     model = Marker
     template_name = 'location/marker.html'
     context_object_name = 'marker'
+    form_class = StartParseForm
     extra_context = {
         'title': 'Маркер',
         'subtitle': 'Детальная информация касательно маркера',
     }
+
+    def get_form(self, form_class=None):
+        form = StartParseForm()
+        form.fields['account'].queryset = Account.objects.filter(user=self.request.user)
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -109,16 +117,10 @@ class MarkerUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         location = Location.objects.get(id=self.kwargs['pk'])
+        points = Point.objects.filter(location=location)
         context['location'] = location
-
-        account_id = self.request.POST.get('account')
-        code = self.request.POST.get('code')
-        account = Account.objects.get(id=account_id)
-
-        client = InstagramClient(login=account.login, password=account.password, code=code)
-        context['markers'] = client.search_locations(lat=location.lat, lng=location.lng)
+        context['points'] = points
         return context
 
 
@@ -133,16 +135,10 @@ class MarkerCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         location = Location.objects.get(id=self.kwargs['pk'])
+        points = Point.objects.filter(location=location)
         context['location'] = location
-
-        account_id = self.request.POST.get('account')
-        code = self.request.POST.get('code')
-        account = Account.objects.get(id=account_id)
-
-        client = InstagramClient(login=account.login, password=account.password, code=code)
-        context['markers'] = client.search_locations(lat=location.lat, lng=location.lng)
+        context['points'] = points
         return context
 
     def form_valid(self, form):
@@ -157,3 +153,81 @@ class MarkerCreateView(LoginRequiredMixin, CreateView):
 class MarkerDeleteView(LoginRequiredMixin, DeleteView):
     model = Marker
     success_url = reverse_lazy('locations')
+
+
+
+
+def point_list_view(request, pk):
+    context = {
+        'title': 'Точки',
+        'subtitle': 'Детальный список полученых точек',
+    }
+
+    if request.method == 'POST':
+        account_id = request.POST.get('account')
+        code = request.POST.get('code')
+        account = Account.objects.get(id=account_id)
+
+        location = Location.objects.get(id=pk)
+
+        client = InstagramClient(login=account.login, password=account.password, code=code)
+        points = client.search_locations(lat=location.lat, lng=location.lng)
+
+        if points:
+            Point.objects.filter(location=location).delete()
+
+        for point in points:
+            point = Point(
+                location=location,
+                title=point['title'],
+                address=point['address'],
+                lng=point['lng'],
+                lat=point['lat'],
+                external_id=point['external_id']
+            )
+            point.save()
+
+    context['points'] = Point.objects.filter(location_id=pk)
+
+    return render(request, 'location/points.html', context)
+
+
+
+# class PointListView(LoginRequiredMixin, FormView, ListView):
+#     model = Point
+#     template_name = 'location/points.html'
+#     context_object_name = 'points'
+#     form_class = StartParseForm
+#     extra_context = {
+#         'title': 'Точки',
+#         'subtitle': 'Детальный список полученых точек',
+#     }
+#
+#     def get_queryset(self):
+#         return Point.objects.filter(location=self.kwargs['pk'])
+#
+#     def post(self, request, *args, **kwargs):
+#         account_id = self.request.POST.get('account')
+#         code = self.request.POST.get('code')
+#         account = Account.objects.get(id=account_id)
+#
+#         location = Location.objects.get(id=self.kwargs['pk'])
+#
+#         client = InstagramClient(login=account.login, password=account.password, code=code)
+#         points = client.search_locations(lat=location.lat, lng=location.lng)
+#
+#         if points:
+#             Point.objects.filter(location=location).delete()
+#
+#         for point in points:
+#             point = Point(
+#                 location=location,
+#                 title=point['title'],
+#                 address=point['address'],
+#                 lng=point['lng'],
+#                 lat=point['lat'],
+#                 external_id=point['external_id']
+#             )
+#             point.save()
+#
+#         return reverse_lazy('location_points', pk=self.kwargs['pk'])

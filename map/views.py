@@ -1,7 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, FormView
-from django.db.models.functions import TruncDate
-from django.db.models import Count
 
 from location.models import Location, Marker, Media
 from map.forms import MapForm
@@ -69,14 +67,17 @@ class AnalyticsView(LoginRequiredMixin, FormView, TemplateView):
             media_count = 0
             markers = Marker.objects.filter(location=location)
             for marker in markers:
-                media_count += Media.objects.filter(marker=marker, date_publish__gte=date_start, date_publish__lte=date_end).count()
+                medias = Media.objects.filter(marker=marker, date_publish__gte=date_start, date_publish__lte=date_end)
+                media_count += medias.count()
 
             location_list.append(location.title)
             media_list.append(media_count)
 
-        self.extra_context['locations'] = {
-            'locations': location_list,
-            'count': media_list
+        self.extra_context['statistics'] = {
+            'locations': {
+                'labels': location_list,
+                'data': media_list,
+            }
         }
 
         return super().post(request, *args, **kwargs)

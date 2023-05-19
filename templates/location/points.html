@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<header>
+    <h1>{{ title }}</h1>
+    <div class="subtitle text-muted">{{ subtitle }}</div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="card-heading">
+                    <h2>Просмотр точек</h2>
+                    <div class="subtitle text-muted">Ниже приведена информация касательно полученых точек</div>
+                </div>
+                <table id="table-points" class="display">
+                    <thead>
+                        <tr>
+                            <th>Дата сканирования</th>
+                            <th>Название</th>
+                            <th>Адрес</th>
+                            <th>Широта</th>
+                            <th>Долгота</th>
+                            <th>ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for point in points %}
+                        <tr>
+                            <td data-sort="{{ point.date_publish|date:'dmYHi' }}">{{ point.date_publish }}</td>
+                            <td>{{ point.title }}</td>
+                            <td>{{ point.address|truncatechars:"20" }}</td>
+                            <td>{{ point.lat }}</td>
+                            <td>{{ point.lng }}</td>
+                            <td>{{ point.external_id }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card mb-3">
+                <div class="card-heading mb-3">
+                    <h2>О точках</h2>
+                    <div class="subtitle text-muted">Дополнительная информация</div>
+                </div>
+                <div>
+                    Маркер можно закрепить только к определённой точке, которая была получена из определённой локации.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+$('#table-points').DataTable({
+    order: [],
+    pageLength: 15,
+    bLengthChange: false,
+    searching: false,
+    language: {
+        "url": "/static/js/datatables_lang.json"
+    }
+});
+</script>
+{% endblock %}
+

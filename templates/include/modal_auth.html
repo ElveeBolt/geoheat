@@ -1,0 +1,25 @@
+<div class="modal fade" id="auth-modal" tabindex="-1" aria-labelledby="auth-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modal-label"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.account.auto_id }}" class="form-label">{{ form.account.label }}</label>
+                {{ form.account }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.code.auto_id }}" class="form-label">{{ form.code.label }}</label>
+                {{ form.code }}
+            </div>
+            <input type="hidden" name="auth" value="auth">
+            <button class="btn btn-primary btn-with-icon" value="auth"><i class="fi fi-rr-play"></i>Авторизироваться</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -38,6 +38,24 @@ class Marker(models.Model):
         verbose_name_plural = 'Маркеры'
 
 
+class Point(models.Model):
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name='Локация')
+    title = models.CharField(null=False, max_length=255, verbose_name='Название точки')
+    address = models.CharField(null=False, max_length=255, verbose_name='Адрес')
+    lat = models.FloatField(null=False, verbose_name='Широта')
+    lng = models.FloatField(null=False, verbose_name='Долгота')
+    external_id = models.BigIntegerField(null=False, verbose_name='ID точки')
+    date_publish = models.DateTimeField(auto_now=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return f"{self.title}"
+
+    class Meta:
+        db_table = 'points'
+        verbose_name = 'точка'
+        verbose_name_plural = 'Точки'
+
+
 class Media(models.Model):
     media_pk = models.BigIntegerField(null=False, verbose_name='ID')
     marker = models.ForeignKey(Marker, on_delete=models.CASCADE, verbose_name='Маркер')

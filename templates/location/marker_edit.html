@@ -82,19 +82,19 @@
     const geojson = {
         'type': 'FeatureCollection',
         'features': [
-            {% for marker in markers %}
+            {% for point in points %}
             {
                 'type': 'Feature',
                 'geometry': {
                     'type': 'Point',
-                    'coordinates': [{{ marker.lng }}, {{ marker.lat }}]
+                    'coordinates': [{{ point.lng }}, {{ point.lat }}]
                 },
                 'properties': {
-                    'title': '{{ marker.name }}',
-                    'description': '{{ marker.address }}',
-                    'lat': '{{ marker.lat }}',
-                    'lng': '{{ marker.lng }}',
-                    'id': '{{ marker.id }}',
+                    'title': '{{ point.name }}',
+                    'description': '{{ point.address }}',
+                    'lat': '{{ point.lat }}',
+                    'lng': '{{ point.lng }}',
+                    'id': '{{ point.external_id }}',
                 }
             },
             {% endfor %}
