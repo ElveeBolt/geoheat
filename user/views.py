@@ -5,6 +5,7 @@ from django.views.generic import CreateView, ListView, DeleteView, UpdateView, D
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView
 from user.forms import SignupForm, ChangePasswordForm, AccountForm
 from .forms import LoginForm
@@ -88,11 +89,12 @@ class UserAccountUpdateView(LoginRequiredMixin, UpdateView):
     }
 
 
-class UserAccountCreateView(LoginRequiredMixin, CreateView):
+class UserAccountCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Account
     template_name = 'user/account_edit.html'
     form_class = AccountForm
     success_url = reverse_lazy('accounts')
+    success_message = 'Аккаунт успешно успешно создан. Теперь вы можете использовать его для сканирования локаций.'
     extra_context = {
         'title': 'Добавление аккаунта',
         'subtitle': 'Страница добавления нового аккаунта',
