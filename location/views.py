@@ -65,11 +65,12 @@ class LocationUpdateView(LoginRequiredMixin, UpdateView):
     }
 
 
-class LocationCreateView(LoginRequiredMixin, CreateView):
+class LocationCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Location
     template_name = 'location/location_edit.html'
     form_class = LocationForm
     success_url = reverse_lazy('locations')
+    success_message = 'Вы успешно создали локацию. Теперь вы можете добавить маркеры для отслеживания публикаций.'
     extra_context = {
         'title': 'Добавление локации',
         'subtitle': 'Страница добавления новой локации',
