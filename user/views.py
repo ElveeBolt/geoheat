@@ -105,9 +105,10 @@ class UserAccountCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView)
         return super().form_valid(form)
 
 
-class UserAccountDeleteView(LoginRequiredMixin, DeleteView):
+class UserAccountDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Account
     success_url = reverse_lazy('accounts')
+    success_message = 'Аккаунт был успешно удалён.'
 
 
 class UserLogoutView(LoginRequiredMixin, LogoutView):
