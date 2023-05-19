@@ -106,11 +106,12 @@ class MarkerDetailView(LoginRequiredMixin, FormView, DetailView):
         return context
 
 
-class MarkerUpdateView(LoginRequiredMixin, UpdateView):
+class MarkerUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Marker
     template_name = 'location/marker_edit.html'
     form_class = MarkerForm
     success_url = reverse_lazy('locations')
+    success_message = 'Вы успешно обновили данные маркера'
     extra_context = {
         'title': 'Редактирование маркера',
         'subtitle': 'Страница редактирования данных текущего маркера',
