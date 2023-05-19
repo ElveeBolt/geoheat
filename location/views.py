@@ -125,10 +125,11 @@ class MarkerUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class MarkerCreateView(LoginRequiredMixin, CreateView):
+class MarkerCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Location
     template_name = 'location/marker_edit.html'
     form_class = MarkerForm
+    success_message = 'Вы успешно создали маркер. Теперь сбор данных будет осуществляться по этим координатам'
     extra_context = {
         'title': 'Добавление маркера',
         'subtitle': 'Страница добавления новой локации',
