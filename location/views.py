@@ -80,9 +80,11 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class LocationDeleteView(LoginRequiredMixin, DeleteView):
+class LocationDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Location
     success_url = reverse_lazy('locations')
+    success_message = 'Вы успешно удалили локацию.'
+
 
 
 class MarkerDetailView(LoginRequiredMixin, FormView, DetailView):
