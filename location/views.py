@@ -123,7 +123,7 @@ class MarkerUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        location = Location.objects.get(id=self.kwargs['pk'])
+        location = Location.objects.get(id=self.kwargs['id_location'])
         points = Point.objects.filter(location=location)
         context['location'] = location
         context['points'] = points

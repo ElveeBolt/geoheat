@@ -11,7 +11,7 @@ urlpatterns = [
     path('create', LocationCreateView.as_view(), name='location_create'),
 
     path('marker/<int:pk>', MarkerDetailView.as_view(), name='marker'),
-    path('marker/<int:pk>/edit', MarkerUpdateView.as_view(), name='marker_edit'),
+    path('<int:id_location>/marker/<int:pk>/edit', MarkerUpdateView.as_view(), name='marker_edit'),
     path('marker/<int:pk>/detele', MarkerDeleteView.as_view(), name='marker_delete'),
     path('<int:pk>/marker/create', MarkerCreateView.as_view(), name='marker_create'),
 

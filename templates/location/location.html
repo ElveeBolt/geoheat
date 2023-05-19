@@ -68,7 +68,7 @@
                             <td>{{ marker.lng }}</td>
                             <td>
                                 <a href="{% url 'marker' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-document"></i></a>
-                                <a href="{% url 'marker_edit' pk=marker.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-edit"></i></a>
+                                <a href="{% url 'marker_edit' pk=marker.id id_location=location.id %}" class="btn btn-icon btn-with-icon"><i class="fi fi-rr-edit"></i></a>
                                 <button type="button" class="btn btn-icon btn-with-icon btn-delete-modal" data-bs-toggle="modal" data-bs-target="#delete-modal" data-url="{% url 'marker_delete' pk=marker.id %}" data-title="{{ marker.title }}"><i class="fi fi-rr-trash"></i></button>
                             </td>
                         </tr>
