@@ -33,6 +33,6 @@ class InstagramClient:
 
     def parse_images_by_marker(self, marker_id: int):
         client = self.create_client()
-        medias = client.location_medias_v1_chunk(location_pk=marker_id, tab_key='recent')
+        medias = client.location_medias_v1_chunk(location_pk=marker_id, tab_key='recent', max_amount=100)
         print(medias)
         return medias[0]
