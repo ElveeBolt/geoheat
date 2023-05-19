@@ -54,11 +54,12 @@ class LocationDetailView(LoginRequiredMixin, FormView, DetailView):
         return super().post(request, *args, **kwargs)
 
 
-class LocationUpdateView(LoginRequiredMixin, UpdateView):
+class LocationUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Location
     template_name = 'location/location_edit.html'
     form_class = LocationForm
     success_url = reverse_lazy('locations')
+    success_message = 'Вы успешно обновили данные локации.'
     extra_context = {
         'title': 'Редактирование локации',
         'subtitle': 'Страница редактирования данных текущей локации',
