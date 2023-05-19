@@ -48,10 +48,11 @@ class UserSignupView(CreateView):
             return super().dispatch(request, *args, **kwargs)
 
 
-class UserChangePassword(LoginRequiredMixin, PasswordChangeView):
+class UserChangePassword(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
     template_name = 'user/change_password.html'
-    success_url = 'change_password'
     form_class = ChangePasswordForm
+    success_url = 'change_password'
+    success_message = 'Пароль успешно изменён. Во время следующей авторизации воспользуйтесь новым паролем'
     extra_context = {
         'title': 'Смена пароля',
         'subtitle': 'Страница смены пароля',
