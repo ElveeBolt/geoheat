@@ -7,6 +7,8 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView
+
+from location.models import Point, Location
 from user.forms import SignupForm, ChangePasswordForm, AccountForm
 from .forms import LoginForm
 from .models import Account
@@ -110,6 +112,20 @@ class UserAccountDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView)
     model = Account
     success_url = reverse_lazy('accounts')
     success_message = 'Аккаунт был успешно удалён.'
+
+
+class UserLocationPointListView(LoginRequiredMixin, ListView):
+    model = Point
+    template_name = 'user/point_list.html'
+    context_object_name = 'points'
+    extra_context = {
+        'title': 'Мои точки',
+        'subtitle': 'Список ваших точек, которые были получены с локаций',
+    }
+
+    def get_queryset(self):
+        locations = Location.objects.filter(user=self.request.user).values('id')
+        return Point.objects.filter(location_id__in=locations)
 
 
 class UserLogoutView(LoginRequiredMixin, LogoutView):
